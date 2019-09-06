@@ -1,4 +1,4 @@
-module github.com/ahmetb/gen-crd-api-reference-docs
+module github.com/elastic/gen-crd-api-reference-docs
 
 require (
 	github.com/pkg/errors v0.8.1
@@ -10,3 +10,5 @@ require (
 	k8s.io/gengo v0.0.0-20190128074634-0689ccc1d7d6
 	k8s.io/klog v0.2.0
 )
+
+go 1.13
