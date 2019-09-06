@@ -34,6 +34,8 @@ var (
 
 	flHTTPAddr = flag.String("http-addr", "", "start an HTTP server on specified addr to view the result (e.g. :8080)")
 	flOutFile  = flag.String("out-file", "", "path to output file to save the result")
+
+	safeIDRegex = regexp.MustCompile("[[:punct:]]+")
 )
 
 type generatorConfig struct {
@@ -365,7 +367,11 @@ func apiGroupForType(t *types.Type, typePkgMap map[*types.Type]*apiPackage) stri
 
 // anchorIDForLocalType returns the #anchor string for the local type
 func anchorIDForLocalType(t *types.Type, typePkgMap map[*types.Type]*apiPackage) string {
-	return fmt.Sprintf("%s.%s", apiGroupForType(t, typePkgMap), t.Name.Name)
+	return safeIdentifier(fmt.Sprintf("%s.%s", apiGroupForType(t, typePkgMap), t.Name.Name))
+}
+
+func safeIdentifier(id string) string {
+	return strings.ToLower(safeIDRegex.ReplaceAllLiteralString(id, "-"))
 }
 
 // linkForType returns an anchor to the type if it can be generated. returns
@@ -608,7 +614,7 @@ func render(w io.Writer, pkgs []*apiPackage, config generatorConfig) error {
 		"hiddenMember":     func(m types.Member) bool { return hiddenMember(m, config) },
 		"isLocalType":      isLocalType,
 		"isOptionalMember": isOptionalMember,
-		"safeIdentifier":   func(s string) string { return regexp.MustCompile("[[:punct:]]+").ReplaceAllLiteralString(s, "-") },
+		"safeIdentifier":   safeIdentifier,
 	}).ParseGlob(filepath.Join(*flTemplateDir, "*.tpl"))
 	if err != nil {
 		return errors.Wrap(err, "parse error")
