@@ -271,6 +271,16 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 	for _, v := range pkgMap {
 		out = append(out, v)
 	}
+
+	sort.SliceStable(out, func(i, j int) bool {
+		a := out[i]
+		b := out[j]
+		if a.apiGroup < b.apiGroup {
+			return true
+		}
+		return a.apiVersion < b.apiVersion
+	})
+
 	return out, nil
 }
 
