@@ -339,14 +339,10 @@ func renderComments(s []string, markdown bool) string {
 		// we treat this as a HTML tag with markdown renderer below. solve this.
 		return string(blackfriday.Run([]byte(doc)))
 	}
-	return nl2br(doc)
+	return doc
 }
 
 func safe(s string) template.HTML { return template.HTML(s) }
-
-func nl2br(s string) string {
-	return strings.Replace(s, "\n\n", string(template.HTML("<br/><br/>")), -1)
-}
 
 func hiddenMember(m types.Member, c generatorConfig) bool {
 	for _, v := range c.HiddenMemberFields {
