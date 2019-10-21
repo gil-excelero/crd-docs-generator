@@ -307,14 +307,20 @@ func findTypeReferences(pkgs []*apiPackage) map[*types.Type][]*types.Type {
 func isExportedType(t *types.Type) bool {
 	// TODO(ahmetb) use types.ExtractSingleBoolCommentTag() to parse +genclient
 	// https://godoc.org/k8s.io/gengo/types#ExtractCommentTags
-	return strings.Contains(strings.Join(t.SecondClosestCommentLines, "\n"), "+genclient")
+	exportedRegEx := regexp.MustCompile(`\+(genclient|kubebuilder:object:root=true)`)
+	for _, line := range t.SecondClosestCommentLines {
+		if exportedRegEx.MatchString(line) {
+			return true
+		}
+	}
+	return false
 }
 
 func fieldName(m types.Member) string {
 	v := reflect.StructTag(m.Tags).Get("json")
 	v = strings.TrimSuffix(v, ",omitempty")
 	v = strings.TrimSuffix(v, ",inline")
-	if v != "" {
+	if v != "" && v != "-" {
 		return v
 	}
 	return m.Name
