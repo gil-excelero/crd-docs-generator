@@ -619,6 +619,20 @@ func render(w io.Writer, pkgs []*apiPackage, config generatorConfig) error {
 			}
 			return v
 		},
+		"asciidocLinkForType": func(t *types.Type) string {
+			link, err := linkForType(t, config, typePkgMap)
+			if err != nil {
+				klog.Fatal(errors.Wrapf(err, "error getting link for type=%s", t.Name))
+				return ""
+			}
+
+			displayName := typeDisplayName(t, config, typePkgMap)
+
+			if strings.HasPrefix(link, "#") {
+				return fmt.Sprintf("xref:%s[$$%s$$]", strings.TrimPrefix(link, "#"), displayName)
+			}
+			return fmt.Sprintf("link:%s[$$%s$$]", link, displayName)
+		},
 		"anchorIDForType":  func(t *types.Type) string { return anchorIDForLocalType(t, typePkgMap) },
 		"safe":             safe,
 		"sortedTypes":      sortTypes,
