@@ -38,6 +38,10 @@ var (
 	safeIDRegex = regexp.MustCompile("[[:punct:]]+")
 )
 
+const (
+	docCommentForceIncludes = "// +gencrdrefdocs:force"
+)
+
 type generatorConfig struct {
 	// HiddenMemberFields hides fields with specified names on all types.
 	HiddenMemberFields []string `json:"hideMemberFields"`
@@ -225,7 +229,7 @@ func parseAPIPackages(dir string) ([]*types.Package, error) {
 			continue
 		}
 
-		if groupName(pkg) != "" && len(pkg.Types) > 0 {
+		if groupName(pkg) != "" && len(pkg.Types) > 0 || containsString(pkg.DocComments, docCommentForceIncludes) {
 			klog.V(3).Infof("package=%v has groupName and has types", p)
 			pkgNames = append(pkgNames, p)
 		}
@@ -237,6 +241,15 @@ func parseAPIPackages(dir string) ([]*types.Package, error) {
 		pkgs = append(pkgs, scan[p])
 	}
 	return pkgs, nil
+}
+
+func containsString(sl []string, str string) bool {
+	for _, s := range sl {
+		if str == s {
+			return true
+		}
+	}
+	return false
 }
 
 // combineAPIPackages groups the Go packages by the <apiGroup+apiVersion> they
