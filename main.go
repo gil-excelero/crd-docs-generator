@@ -75,7 +75,7 @@ type apiPackage struct {
 
 func (v *apiPackage) identifier() string { return fmt.Sprintf("%s/%s", v.apiGroup, v.apiVersion) }
 
-func init() {
+func initFlags() {
 	klog.InitFlags(nil)
 	flag.Set("alsologtostderr", "true") // for klog
 	flag.Parse()
@@ -113,6 +113,8 @@ func resolveTemplateDir(dir string) error {
 
 func main() {
 	defer klog.Flush()
+
+	initFlags()
 
 	f, err := os.Open(*flConfig)
 	if err != nil {
@@ -271,17 +273,21 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 	for _, v := range pkgMap {
 		out = append(out, v)
 	}
+	sortPackages(out)
 
-	sort.SliceStable(out, func(i, j int) bool {
-		a := out[i]
-		b := out[j]
-		if a.apiGroup < b.apiGroup {
-			return true
+	return out, nil
+}
+
+// sortPackages sorts the given packages in a consistent alphabetical order.
+func sortPackages(packages []*apiPackage) {
+	sort.SliceStable(packages, func(i, j int) bool {
+		a := packages[i]
+		b := packages[j]
+		if a.apiGroup != b.apiGroup {
+			return a.apiGroup < b.apiGroup
 		}
 		return a.apiVersion < b.apiVersion
 	})
-
-	return out, nil
 }
 
 // isVendorPackage determines if package is coming from vendor/ dir.
