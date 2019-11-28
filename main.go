@@ -75,7 +75,7 @@ type apiPackage struct {
 
 func (v *apiPackage) identifier() string { return fmt.Sprintf("%s/%s", v.apiGroup, v.apiVersion) }
 
-func init() {
+func initFlags() {
 	klog.InitFlags(nil)
 	flag.Set("alsologtostderr", "true") // for klog
 	flag.Parse()
@@ -113,6 +113,8 @@ func resolveTemplateDir(dir string) error {
 
 func main() {
 	defer klog.Flush()
+
+	initFlags()
 
 	f, err := os.Open(*flConfig)
 	if err != nil {
