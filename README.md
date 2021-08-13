@@ -1,9 +1,9 @@
 # Kubernetes Custom Resource API Reference Docs generator
 
-If you have a project that is Custom Resource Definitions and wanted to generate
+If you have a project that has Custom Resource Definitions and wanted to generate
 API Reference Docs [like this][ar] this tool is for you.
 
-[ar]: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/
+[ar]: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/
 
 ## Current Users
 
@@ -56,24 +56,14 @@ Capabilities of this tool include:
 
 1. Clone this repository.
 
-2. Make sure you have go1.11+ instaled. Then run `go build`, you should get a
-   `gen-crd-api-reference-docs` binary executable in the current directory.
+2. Run `make build` and you should have a `crd-docs-generator` executable in the project root directory
 
-3. Clone a Knative repository, set GOPATH correctly,
-   and call the compiled binary within that directory.
-
-    ```sh
-    # go into a repository root with GOPATH set. (I use my own script
-    # goclone(1) to have a separate GOPATH for each repo I clone.)
-    $ goclone knative/build
-
-    $ /path/to/gen-crd-api-reference-docs \
-        -config "/path/to/example-config.json" \
-        -api-dir "github.com/knative/build/pkg/apis/build/v1alpha1" \
-        -out-file docs.html
+3. Run the executable
+   ```
+   $ ./crd-docs-generator -config "config/config.json" -api-dir "/your/project/apis/v1" -template-dir templates/html -out-file docs.html
     ```
 
-4. Visit `docs.html` to view the results.
+4. Open `docs.html` to view the results.
 
 -----
 

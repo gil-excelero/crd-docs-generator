@@ -5,16 +5,18 @@
     {{ if eq .Kind "Alias" }}(<code>{{.Underlying}}</code> alias){{ end -}}
 </h3>
 {{ with (typeReferences .) }}
-    <p>
-        (<em>Appears on:</em>
-        {{- $prev := "" -}}
-        {{- range . -}}
-            {{- if $prev -}}, {{ end -}}
-            {{- $prev = . -}}
-            <a href="{{ linkForType . }}">{{ typeDisplayName . }}</a>
-        {{- end -}}
-        )
-    </p>
+    <div class="alert alert-info col-md-8"><i class="fa fa-info-circle"></i> Appears In:
+    <ul>
+        <li>
+                {{- $prev := "" -}}
+                {{- range . -}}
+                    {{- if $prev -}}, {{ end -}}
+                    {{- $prev = . -}}
+                    <a href="{{ linkForType . }}">{{ typeDisplayName . }}</a>
+                {{- end -}}
+        </li>
+    </ul>
+    </div>
 {{ end }}
 
 <div>
@@ -57,8 +59,9 @@
         {{ if isExportedType . }}
         <tr>
             <td>
-                <code>apiVersion</code><br/>
-                string</td>
+                <code>apiVersion</code></br>
+                <span class="type">string<span>
+            </td>
             <td>
                 <code>
                     {{apiGroup .}}
@@ -67,8 +70,8 @@
         </tr>
         <tr>
             <td>
-                <code>kind</code><br/>
-                string
+                <code>kind</code></br>
+                <span class="type">string<span>
             </td>
             <td><code>{{.Name.Name}}</code></td>
         </tr>

@@ -11,7 +11,7 @@
                     {{ typeDisplayName .Type }}
                 </a>
             {{ else }}
-                {{ typeDisplayName .Type }}
+                <span class="type">{{ typeDisplayName .Type }}<span>
             {{ end }}
         </em>
     </td>
@@ -37,7 +37,15 @@
         <br/>
         <br/>
         <table>
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
             {{ template "members" .Type }}
+            </tbody>
         </table>
     {{ end }}
     </td>

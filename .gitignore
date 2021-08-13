@@ -14,3 +14,15 @@ refdocs
 
 # goreleaser output
 dist
+
+
+# This program binary
+crd-docs-generator
+
+# IDE
+.vscode
+
+# potential output files from this tool
+*.html
+*.md
+
